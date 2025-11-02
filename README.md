@@ -256,7 +256,7 @@ MIT License - see [LICENSE](LICENSE)
 
 - **💬 Discussions**: [GitHub Discussions](https://github.com/seanshin0214/qualai-mcp/discussions)
 - **🐛 Issues**: [GitHub Issues](https://github.com/seanshin0214/qualai-mcp/issues)
-- **📧 Email**: seanshin0214@gmail.com
+- **📧 Email**: sshin@geri.kr
 
 ---
 

@@ -529,7 +529,7 @@ Week 2: Thematic Analysis
 
 - **GitHub Discussions**: [Ask questions, share tips](https://github.com/seanshin0214/qualai-mcp/discussions)
 - **GitHub Issues**: [Report bugs, request features](https://github.com/seanshin0214/qualai-mcp/issues)
-- **Email**: seanshin0214@gmail.com
+- **Email**: sshin@geri.kr
 
 ### Citation
 
