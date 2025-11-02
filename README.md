@@ -42,7 +42,7 @@ When you contribute your methodology to QualAI:
 - **Validated approaches**: Peer-reviewed methodologies with quality ratings
 - **Flexible**: Use established methods or create your own
 
-### 🎯 **20 Specialized Tools**
+### 🎯 **Core Tools (v1.0)**
 
 #### Methodology Management (3)
 - `selectMethodology` - AI finds the best methodology for your research
@@ -77,6 +77,8 @@ When you contribute your methodology to QualAI:
 - `generateReport` - Comprehensive analysis reports
 
 ---
+n**Note:** v1.0 includes methodology management and knowledge graph. Advanced analysis tools (auto-coding, theme extraction, etc.) are in active development for v1.1.
+
 
 ## 🚀 Quick Start
 

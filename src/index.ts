@@ -14,7 +14,12 @@ import {
 import { SQLiteAdapter } from './knowledge/storage/sqlite-adapter.js';
 import { MethodologyRAG } from './rag/methodology-rag.js';
 import { z } from 'zod';
+import { CodingEngine } from './analysis/coding-engine.js';
+import { ThemeEngine } from './analysis/theme-engine.js';
 
+
+const codingEngine = new CodingEngine();
+const themeEngine = new ThemeEngine();
 // Initialize core systems
 const db = new SQLiteAdapter();
 const rag = new MethodologyRAG();
