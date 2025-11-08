@@ -576,14 +576,444 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
-      // Coding Tools (placeholder implementations)
+      // Coding Tools
       case 'autoCoding': {
         const parsed = autoCodingSchema.parse(args);
+
+        const result = await codingEngine.autoCoding({
+          text: parsed.text,
+          existingCodes: parsed.existingCodes,
+          methodology: parsed.methodology,
+        });
+
+        let response = `📊 AUTO-CODING RESULTS\n\n`;
+        response += `Text analyzed: ${parsed.text.length} characters\n`;
+        response += `Codes generated: ${result.codes.length}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📝 CODES:\n\n`;
+        for (const code of result.codes.slice(0, 20)) {
+          response += `• ${code.name} (${code.type})\n`;
+          response += `  Definition: ${code.definition}\n`;
+          response += `  Frequency: ${code.frequency}\n`;
+          if (code.examples.length > 0) {
+            response += `  Example: "${code.examples[0].slice(0, 80)}..."\n`;
+          }
+          response += `\n`;
+        }
+
+        if (result.codes.length > 20) {
+          response += `... and ${result.codes.length - 20} more codes\n\n`;
+        }
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📈 SUMMARY:\n`;
+        response += `- Total codes: ${result.summary.totalCodes}\n`;
+        response += `- In-vivo codes: ${result.summary.inVivoCodes}\n`;
+        response += `- Constructed codes: ${result.summary.constructedCodes}\n`;
+        response += `- Theoretical codes: ${result.summary.theoreticalCodes}\n`;
+        response += `- Avg codes per segment: ${result.summary.averageCodesPerSegment.toFixed(1)}\n`;
 
         return {
           content: [{
             type: 'text',
-            text: `🔄 Auto-coding analysis for ${parsed.text.length} characters...\n\nThis feature will analyze your text and suggest codes based on:\n- Content semantics\n- Existing codes: ${parsed.existingCodes?.join(', ') || 'none'}\n- Methodology: ${parsed.methodology || 'general'}\n\n[Full implementation in progress]`,
+            text: response,
+          }],
+        };
+      }
+
+      case 'refineCodebook': {
+        const parsed = refineCodebookSchema.parse(args);
+
+        // Get all codes from the project
+        const projectEntity = db.getEntity(parsed.projectName);
+        if (!projectEntity) {
+          throw new Error(`Project "${parsed.projectName}" not found. Create a project first using createProject.`);
+        }
+
+        // Get all code entities
+        const allEntities = db.searchEntities(parsed.projectName);
+        const codeEntities = allEntities.filter(e => e.entityType === 'code');
+
+        if (codeEntities.length === 0) {
+          throw new Error('No codes found in project. Run autoCoding first.');
+        }
+
+        const codes = codeEntities.map(e => ({
+          name: e.name.replace(`${parsed.projectName}__code__`, ''),
+          definition: e.observations[0] || '',
+          examples: (e.metadata?.examples as string[]) || [],
+          frequency: (e.metadata?.frequency as number) || 1,
+          type: (e.metadata?.type as 'in_vivo' | 'constructed' | 'theoretical') || 'constructed',
+        }));
+
+        const result = await codingEngine.refineCodebook(codes);
+
+        let response = `🔧 CODEBOOK REFINEMENT\n\n`;
+        response += `Original codes: ${codes.length}\n`;
+        response += `Refined codes: ${result.refined.length}\n`;
+        response += `Merges performed: ${result.merges.length}\n\n`;
+
+        if (result.merges.length > 0) {
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+          response += `🔀 MERGE OPERATIONS:\n\n`;
+          for (const merge of result.merges) {
+            response += `• Merged: ${merge.from.join(', ')}\n`;
+            response += `  → Into: ${merge.to}\n`;
+            response += `  Reason: ${merge.reason}\n\n`;
+          }
+        }
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        response += `✅ Codebook has been refined and saved.\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'extractThemes': {
+        const parsed = extractThemesSchema.parse(args);
+
+        // Get all codes from the project
+        const projectEntity = db.getEntity(parsed.projectName);
+        if (!projectEntity) {
+          throw new Error(`Project "${parsed.projectName}" not found.`);
+        }
+
+        const allEntities = db.searchEntities(parsed.projectName);
+        const codeEntities = allEntities.filter(e => e.entityType === 'code');
+
+        if (codeEntities.length === 0) {
+          throw new Error('No codes found. Run autoCoding first.');
+        }
+
+        const codes = codeEntities.map(e => ({
+          name: e.name.replace(`${parsed.projectName}__code__`, ''),
+          definition: e.observations[0] || '',
+          examples: (e.metadata?.examples as string[]) || [],
+          frequency: (e.metadata?.frequency as number) || 1,
+          type: (e.metadata?.type as 'in_vivo' | 'constructed' | 'theoretical') || 'constructed',
+        }));
+
+        const themes = await themeEngine.extractThemes({
+          codes,
+          mode: parsed.mode,
+          depth: parsed.depth,
+        });
+
+        // Store themes in knowledge graph
+        for (const theme of themes) {
+          db.createEntity({
+            name: `${parsed.projectName}__theme__${theme.name}`,
+            entityType: 'theme',
+            observations: [
+              theme.description,
+              `Prevalence: ${(theme.prevalence * 100).toFixed(1)}%`,
+              `Supporting codes: ${theme.supportingCodes.length}`,
+            ],
+            metadata: { theme },
+          });
+
+          db.createRelation({
+            from: `${parsed.projectName}__theme__${theme.name}`,
+            to: parsed.projectName,
+            relationType: 'theme_of',
+          });
+        }
+
+        let response = `🎨 THEME EXTRACTION (${parsed.mode})\n\n`;
+        response += `Codes analyzed: ${codes.length}\n`;
+        response += `Themes extracted: ${themes.length}\n`;
+        response += `Depth: ${parsed.depth || 'medium'}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        for (const theme of themes) {
+          response += `📌 ${theme.name}\n\n`;
+          response += `${theme.description}\n\n`;
+          response += `Prevalence: ${(theme.prevalence * 100).toFixed(1)}% of coded data\n`;
+          response += `Supporting codes (${theme.supportingCodes.length}): ${theme.supportingCodes.slice(0, 5).join(', ')}${theme.supportingCodes.length > 5 ? '...' : ''}\n\n`;
+
+          if (theme.examples.length > 0) {
+            response += `Example quotes:\n`;
+            for (const ex of theme.examples.slice(0, 2)) {
+              response += `  "${ex.slice(0, 100)}${ex.length > 100 ? '...' : ''}"\n`;
+            }
+            response += `\n`;
+          }
+
+          if (theme.subThemes && theme.subThemes.length > 0) {
+            response += `Sub-themes (${theme.subThemes.length}):\n`;
+            for (const sub of theme.subThemes) {
+              response += `  - ${sub.name}\n`;
+            }
+            response += `\n`;
+          }
+
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        }
+
+        response += `✅ Themes have been saved to the knowledge graph.\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'detectSaturation': {
+        const parsed = detectSaturationSchema.parse(args);
+
+        // Get all data sources for this project
+        const projectEntity = db.getEntity(parsed.projectName);
+        if (!projectEntity) {
+          throw new Error(`Project "${parsed.projectName}" not found.`);
+        }
+
+        const relations = db.getRelations(parsed.projectName);
+        const sourceRelations = relations.filter(r => r.relationType === 'part_of');
+
+        if (sourceRelations.length < 2) {
+          throw new Error('Need at least 2 data sources to detect saturation.');
+        }
+
+        // Get codes for each source
+        const codesBySource = new Map();
+
+        for (const rel of sourceRelations) {
+          const source = db.getEntity(rel.from);
+          if (source && source.metadata && source.metadata.content) {
+            const codingResult = await codingEngine.autoCoding({
+              text: source.metadata.content as string,
+              methodology: 'grounded',
+            });
+            codesBySource.set(rel.from, codingResult.codes);
+          }
+        }
+
+        const saturation = await themeEngine.detectSaturation({
+          level: parsed.level,
+          codesBySource,
+        });
+
+        let response = `📊 SATURATION ANALYSIS (${parsed.level} level)\n\n`;
+        response += `Data sources analyzed: ${codesBySource.size}\n`;
+        response += `Saturation rate: ${(saturation.saturationRate * 100).toFixed(1)}%\n`;
+        response += `Saturated: ${saturation.saturated ? '✅ YES' : '❌ NO'}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📈 NEW CODES PER SOURCE:\n\n`;
+        saturation.newCodesPerSource.forEach((count, idx) => {
+          response += `Source ${idx + 1}: ${count} new codes\n`;
+        });
+
+        response += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `💡 RECOMMENDATION:\n\n${saturation.recommendation}\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'analyzePatterns': {
+        const parsed = { projectName: (args as any).projectName };
+
+        // Get all codes
+        const projectEntity = db.getEntity(parsed.projectName);
+        if (!projectEntity) {
+          throw new Error(`Project "${parsed.projectName}" not found.`);
+        }
+
+        const allEntities = db.searchEntities(parsed.projectName);
+        const codeEntities = allEntities.filter(e => e.entityType === 'code');
+
+        if (codeEntities.length === 0) {
+          throw new Error('No codes found. Run autoCoding first.');
+        }
+
+        const codes = codeEntities.map(e => ({
+          name: e.name.replace(`${parsed.projectName}__code__`, ''),
+          definition: e.observations[0] || '',
+          examples: (e.metadata?.examples as string[]) || [],
+          frequency: (e.metadata?.frequency as number) || 1,
+          type: (e.metadata?.type as 'in_vivo' | 'constructed' | 'theoretical') || 'constructed',
+        }));
+
+        const patterns = await themeEngine.analyzePatterns(codes);
+
+        let response = `🔍 PATTERN ANALYSIS\n\n`;
+        response += `Codes analyzed: ${codes.length}\n`;
+        response += `Patterns found: ${patterns.length}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        const byType: Record<string, typeof patterns> = {
+          'co-occurrence': [],
+          'contrast': [],
+          'hierarchy': [],
+          'sequence': [],
+        };
+
+        patterns.forEach(p => {
+          if (!byType[p.type]) byType[p.type] = [];
+          byType[p.type].push(p);
+        });
+
+        for (const [type, typePatterns] of Object.entries(byType)) {
+          if (typePatterns.length === 0) continue;
+
+          response += `📍 ${type.toUpperCase()} PATTERNS (${typePatterns.length}):\n\n`;
+
+          for (const pattern of typePatterns.slice(0, 5)) {
+            response += `• ${pattern.description}\n`;
+            response += `  Elements: ${pattern.elements.join(', ')}\n`;
+            response += `  Frequency: ${pattern.frequency}\n`;
+            response += `  Significance: ${pattern.significance}\n\n`;
+          }
+
+          if (typePatterns.length > 5) {
+            response += `... and ${typePatterns.length - 5} more ${type} patterns\n\n`;
+          }
+
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        }
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'findNegativeCases': {
+        const parsed = findNegativeCasesSchema.parse(args);
+
+        // Get theme entity
+        const themeEntity = db.getEntity(parsed.theme);
+        if (!themeEntity || !themeEntity.metadata || !themeEntity.metadata.theme) {
+          throw new Error(`Theme "${parsed.theme}" not found. Run extractThemes first.`);
+        }
+
+        const theme = themeEntity.metadata.theme as any;
+
+        // Get all codes from the same project
+        const projectName = parsed.theme.split('__theme__')[0];
+        const allEntities = db.searchEntities(projectName);
+        const codeEntities = allEntities.filter(e => e.entityType === 'code');
+
+        const allCodes = codeEntities.map(e => ({
+          name: e.name.replace(`${projectName}__code__`, ''),
+          definition: e.observations[0] || '',
+          examples: (e.metadata?.examples as string[]) || [],
+          frequency: (e.metadata?.frequency as number) || 1,
+          type: (e.metadata?.type as 'in_vivo' | 'constructed' | 'theoretical') || 'constructed',
+        }));
+
+        const result = await themeEngine.findNegativeCases({
+          theme,
+          allCodes,
+          threshold: parsed.threshold || 'moderate',
+        });
+
+        let response = `🔍 NEGATIVE CASE ANALYSIS\n\n`;
+        response += `Theme: ${theme.name}\n`;
+        response += `Threshold: ${parsed.threshold || 'moderate'}\n`;
+        response += `Negative cases found: ${result.negativeCases.length}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        if (result.negativeCases.length > 0) {
+          response += `⚠️ CONTRADICTING CODES:\n\n`;
+          for (const nc of result.negativeCases) {
+            response += `• ${nc.code} (${nc.strength})\n`;
+            response += `  Contradiction: ${nc.contradiction}\n\n`;
+          }
+
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        }
+
+        response += `💡 RECOMMENDATION:\n\n${result.recommendation}\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'calculateReliability': {
+        const parsed = calculateReliabilitySchema.parse(args);
+
+        // Calculate Cohen's Kappa
+        const coder1Set = new Set(parsed.coder1Codes);
+        const coder2Set = new Set(parsed.coder2Codes);
+
+        const agreements = parsed.coder1Codes.filter(c => coder2Set.has(c)).length;
+        const disagreements1 = parsed.coder1Codes.filter(c => !coder2Set.has(c)).length;
+        const disagreements2 = parsed.coder2Codes.filter(c => !coder1Set.has(c)).length;
+
+        const total = agreements + disagreements1 + disagreements2;
+
+        const po = total > 0 ? agreements / total : 0; // observed agreement
+        const pe = 0.5; // expected agreement by chance (simplified)
+        const kappa = pe < 1 ? (po - pe) / (1 - pe) : 1;
+
+        let interpretation: string;
+        if (kappa > 0.8) interpretation = 'Excellent agreement';
+        else if (kappa > 0.6) interpretation = 'Substantial agreement';
+        else if (kappa > 0.4) interpretation = 'Moderate agreement';
+        else if (kappa > 0.2) interpretation = 'Fair agreement';
+        else interpretation = 'Poor agreement';
+
+        const percentageAgreement = ((agreements / Math.max(parsed.coder1Codes.length, parsed.coder2Codes.length)) * 100).toFixed(1);
+
+        let response = `📊 INTER-CODER RELIABILITY\n\n`;
+        response += `Segment: "${parsed.segment.slice(0, 100)}${parsed.segment.length > 100 ? '...' : ''}"\n`;
+        response += `Measure: ${parsed.measure || 'cohens_kappa'}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📈 RESULTS:\n\n`;
+        response += `Cohen's Kappa (κ): ${kappa.toFixed(3)}\n`;
+        response += `Interpretation: ${interpretation}\n`;
+        response += `Percentage Agreement: ${percentageAgreement}%\n\n`;
+
+        response += `Agreements: ${agreements}\n`;
+        response += `Disagreements (Coder 1 only): ${disagreements1}\n`;
+        response += `Disagreements (Coder 2 only): ${disagreements2}\n`;
+        response += `Total comparisons: ${total}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `💡 RECOMMENDATION:\n\n`;
+        if (kappa < 0.6) {
+          response += `Reliability is below the 0.6 threshold. Consider:\n`;
+          response += `1. Refining code definitions\n`;
+          response += `2. Additional coder training\n`;
+          response += `3. Discussing disagreements\n`;
+        } else {
+          response += `Reliability is acceptable for qualitative research. Continue coding!\n`;
+        }
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
           }],
         };
       }

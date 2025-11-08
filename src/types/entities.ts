@@ -54,7 +54,8 @@ export type RelationType =
   | 'triangulates_with'
   | 'causes'
   | 'influences'
-  | 'theory_of';
+  | 'theory_of'
+  | 'theme_of';
 
 export interface KnowledgeGraph {
   entities: Entity[];
