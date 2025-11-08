@@ -1,0 +1,91 @@
+{
+  "id": "action-research-reason-bradbury-2008",
+  "name": "Action Research",
+  "version": "2.0.0",
+  "author": "Peter Reason & Hilary Bradbury",
+  "category": "mixed",
+  "description": "Participatory research approach that seeks to bring together action and reflection, theory and practice, in pursuit of practical solutions to pressing concerns. Research WITH people rather than ON people.",
+  "stages": [
+    {
+      "name": "Collaborative Problem Identification",
+      "description": "Work with stakeholders to identify and frame the issue to address",
+      "order": 1,
+      "promptTemplate": "Facilitate collaborative inquiry:\n1. Who are the stakeholders affected by this issue?\n2. What is the problem from different perspectives?\n3. What are the root causes vs. symptoms?\n4. What outcomes do participants hope for?\n5. What power dynamics exist among stakeholders?\n\nEnsure diverse voices are included in problem framing.",
+      "inputs": ["stakeholder_input", "context_analysis"],
+      "outputs": ["problem_statement", "stakeholder_map", "desired_outcomes"],
+      "minimumSampleSize": 5
+    },
+    {
+      "name": "Participatory Planning",
+      "description": "Co-design action plan with participants",
+      "order": 2,
+      "requires": ["Collaborative Problem Identification"],
+      "promptTemplate": "Develop action plan collaboratively:\n1. What actions might address the problem?\n2. What resources are needed?\n3. Who will do what, when?\n4. How will we know if actions are effective?\n5. What data will we collect?\n6. How will we reflect on and learn from actions?\n\nEnsure plan is feasible and owned by participants.",
+      "inputs": ["problem_statement", "stakeholder_input"],
+      "outputs": ["action_plan", "data_collection_plan", "success_criteria"]
+    },
+    {
+      "name": "Action Implementation and Data Collection",
+      "description": "Take action while systematically collecting data on process and outcomes",
+      "order": 3,
+      "requires": ["Participatory Planning"],
+      "promptTemplate": "Document the action phase:\n1. What actions were actually taken? (vs. planned)\n2. How did participants experience the actions?\n3. What unexpected events or consequences occurred?\n4. What worked well? What didn't?\n5. How did context enable or constrain action?\n6. What is the researcher/facilitator learning?\n\nCollect both process data (what happened) and outcome data (what changed).",
+      "inputs": ["action_logs", "participant_feedback", "observations"],
+      "outputs": ["action_documentation", "process_data", "outcome_data"]
+    },
+    {
+      "name": "Collaborative Reflection and Learning",
+      "description": "Analyze data and reflect with participants on what was learned",
+      "order": 4,
+      "requires": ["Action Implementation and Data Collection"],
+      "promptTemplate": "Facilitate collaborative reflection:\n1. What patterns emerge from the data?\n2. What explains outcomes (both intended and unintended)?\n3. What did participants learn about the problem and themselves?\n4. How have understandings shifted?\n5. What theoretical insights emerge?\n6. What implications for future action?\n\nUse both individual and group reflection processes.",
+      "inputs": ["process_data", "outcome_data", "participant_input"],
+      "outputs": ["collaborative_analysis", "lessons_learned", "theoretical_insights"]
+    },
+    {
+      "name": "Planning Next Cycle",
+      "description": "Use learning to plan next action-reflection cycle",
+      "order": 5,
+      "requires": ["Collaborative Reflection and Learning"],
+      "promptTemplate": "Plan iterative development:\n1. How should the problem be reframed based on learning?\n2. What new or modified actions should be tried?\n3. Who else should be involved?\n4. What questions remain?\n5. How will next cycle build on this one?\n\nAction research is cyclical - each cycle informs the next.",
+      "inputs": ["lessons_learned", "participant_input"],
+      "outputs": ["revised_problem_framing", "next_cycle_plan", "emerging_theory"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding"],
+    "analysis": ["extractThemes", "analyzePatterns"],
+    "validation": ["triangulate"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "participation": "Are stakeholders actively involved throughout?",
+    "practicalValue": "Does research lead to meaningful action and change?",
+    "democraticValidity": "Are diverse perspectives honored?",
+    "outcomeValidity": "Did actions produce intended outcomes?",
+    "processValidity": "Was the research process sound?",
+    "catalyticValidity": "Did research empower participants?"
+  },
+  "metadata": {
+    "citations": 567,
+    "usageCount": 0,
+    "rating": 4.5,
+    "tags": ["action-research", "participatory", "change", "collaborative", "cyclical"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Reason, P., & Bradbury, H. (Eds.). (2008). The SAGE handbook of action research (2nd ed.). Sage.",
+      "Kemmis, S., & McTaggart, R. (2005). Participatory action research. In N. Denzin & Y. Lincoln (Eds.), Handbook of qualitative research (3rd ed., pp. 559-603). Sage.",
+      "Herr, K., & Anderson, G. L. (2005). The action research dissertation. Sage."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["action_research_practitioner", "community_based_researcher"],
+  "examples": [
+    {
+      "title": "School Improvement Project",
+      "description": "Teachers and researchers collaboratively improving literacy instruction",
+      "context": "Educational practice",
+      "sampleSize": 12
+    }
+  ]
+}

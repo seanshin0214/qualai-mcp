@@ -1,0 +1,91 @@
+{
+  "id": "hermeneutic-analysis-gadamer-1989",
+  "name": "Hermeneutic Analysis",
+  "version": "1.0.0",
+  "author": "Hans-Georg Gadamer",
+  "category": "interpretive",
+  "description": "Interpretive methodology focused on understanding meaning in context. Emphasizes the hermeneutic circle - iterative movement between parts and whole, and the role of interpreter's pre-understandings.",
+  "stages": [
+    {
+      "name": "Bracketing Pre-understandings",
+      "description": "Identify and make explicit your own assumptions and pre-understandings",
+      "order": 1,
+      "promptTemplate": "Reflect on your relationship to the text/phenomenon:\n1. What prior knowledge or assumptions do you bring?\n2. What is your cultural and historical situatedness?\n3. What prejudices (in Gadamer's sense) might shape interpretation?\n4. What is your initial understanding of the phenomenon?\n5. How might your position affect what you see and don't see?\n\nAcknowledge rather than eliminate pre-understandings - they enable understanding.",
+      "inputs": ["research_context", "researcher_background"],
+      "outputs": ["pre-understandings", "researcher_position", "initial_understanding"],
+      "minimumSampleSize": 1
+    },
+    {
+      "name": "Holistic Reading",
+      "description": "Read the whole text to grasp overall meaning and context",
+      "order": 2,
+      "requires": ["Bracketing Pre-understandings"],
+      "promptTemplate": "Engage with the text as a whole:\n1. What is the overall sense or gestalt of this text?\n2. What historical and cultural context is it situated in?\n3. What question is the text answering?\n4. What world does this text open up?\n5. How does it address human concerns?\n\nRead for understanding, not just information extraction.",
+      "inputs": ["texts", "context_materials"],
+      "outputs": ["holistic_interpretation", "contextual_understanding", "guiding_questions"]
+    },
+    {
+      "name": "Detailed Interpretation",
+      "description": "Closely interpret specific passages, moving between part and whole",
+      "order": 3,
+      "requires": ["Holistic Reading"],
+      "promptTemplate": "Engage the hermeneutic circle:\n1. Select key passages for close reading\n2. What does this passage mean in context?\n3. How does it relate to the whole text?\n4. How does understanding this part change understanding of whole?\n5. What new questions emerge?\n6. Return to whole with revised understanding\n\nIterate between part and whole, allowing meaning to emerge.",
+      "inputs": ["texts", "holistic_interpretation"],
+      "outputs": ["detailed_interpretations", "revised_understanding", "emerging_questions"]
+    },
+    {
+      "name": "Fusion of Horizons",
+      "description": "Bring together the horizon of the text with your own horizon of understanding",
+      "order": 4,
+      "requires": ["Detailed Interpretation"],
+      "promptTemplate": "Achieve fusion of horizons:\n1. How does the text challenge your pre-understandings?\n2. What new understanding emerges in the encounter?\n3. How has your horizon expanded or shifted?\n4. What do you and the text now understand together?\n5. What questions remain open?\n6. How might others understand this differently?\n\nUnderstanding is a dialogical achievement.",
+      "inputs": ["detailed_interpretations", "pre-understandings"],
+      "outputs": ["fused_understanding", "transformed_horizons", "interpretive_insights"]
+    },
+    {
+      "name": "Application and Appropriation",
+      "description": "Consider what the interpretation means for understanding and action",
+      "order": 5,
+      "requires": ["Fusion of Horizons"],
+      "promptTemplate": "Apply understanding:\n1. What does this understanding mean for the phenomenon of interest?\n2. How does it illuminate human experience?\n3. What practical or theoretical significance does it have?\n4. How might it inform action or further inquiry?\n5. What are the limitations of this interpretation?\n6. What alternative interpretations are possible?\n\nHermeneutic understanding is always applied understanding.",
+      "inputs": ["fused_understanding", "research_questions"],
+      "outputs": ["applications", "practical_implications", "theoretical_contributions", "reflexive_critique"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding"],
+    "analysis": ["extractThemes"],
+    "validation": ["findNegativeCases"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "contextuality": "Is interpretation grounded in context?",
+    "coherence": "Does interpretation form a coherent whole?",
+    "penetration": "Does it reveal deeper meanings?",
+    "thoroughness": "Are alternative interpretations considered?",
+    "agreement": "Do other interpreters find it plausible?",
+    "transformative": "Does it expand understanding?"
+  },
+  "metadata": {
+    "citations": 445,
+    "usageCount": 0,
+    "rating": 4.3,
+    "tags": ["hermeneutics", "interpretation", "meaning", "understanding", "philosophical"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Gadamer, H.-G. (1989). Truth and method (2nd rev. ed.). Continuum.",
+      "Ricoeur, P. (1981). Hermeneutics and the human sciences. Cambridge University Press.",
+      "Fleming, V., Gaidys, U., & Robb, Y. (2003). Hermeneutic research in nursing. Journal of Advanced Nursing, 41(1), 34-39."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["hermeneutic_scholar", "philosophical_researcher"],
+  "examples": [
+    {
+      "title": "Understanding Patient Illness Narratives",
+      "description": "Hermeneutic interpretation of how patients make meaning of chronic illness",
+      "context": "Health research",
+      "sampleSize": 8
+    }
+  ]
+}

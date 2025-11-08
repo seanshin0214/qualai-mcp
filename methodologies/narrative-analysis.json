@@ -1,0 +1,80 @@
+{
+  "id": "narrative-analysis-riessman-2008",
+  "name": "Narrative Analysis",
+  "version": "2.0.0",
+  "author": "Catherine Kohler Riessman",
+  "category": "interpretive",
+  "description": "A methodology for analyzing stories and personal narratives to understand how people make meaning of their experiences. Focuses on the structure, content, and context of narratives.",
+  "stages": [
+    {
+      "name": "Narrative Collection",
+      "description": "Gather complete narratives from participants, preserving story structure and context",
+      "order": 1,
+      "promptTemplate": "Identify complete narrative segments in the data that have a beginning, middle, and end. Look for stories that participants tell about specific events or experiences. Extract:\n1. Setting and context\n2. Characters and their roles\n3. Plot sequence (complication, turning point, resolution)\n4. Evaluation (how narrator interprets events)\n5. Narrative coda (how story connects to present)\n\nFor each narrative, preserve the original language and structure.",
+      "inputs": ["interview_transcripts", "written_narratives"],
+      "outputs": ["complete_narratives", "narrative_segments"],
+      "minimumSampleSize": 5
+    },
+    {
+      "name": "Structural Analysis",
+      "description": "Analyze the formal structure of narratives using narrative grammar",
+      "order": 2,
+      "requires": ["Narrative Collection"],
+      "promptTemplate": "Analyze the structure of each narrative:\n1. Abstract: How does the narrator introduce the story?\n2. Orientation: Who, what, when, where?\n3. Complicating action: What happened? (plot)\n4. Evaluation: So what? Why is this important?\n5. Resolution: How did it turn out?\n6. Coda: How does it relate to the present?\n\nIdentify narrative devices used (metaphor, repetition, dialogue, etc.).",
+      "inputs": ["complete_narratives"],
+      "outputs": ["narrative_structures", "narrative_devices"]
+    },
+    {
+      "name": "Thematic Analysis",
+      "description": "Identify themes across narratives while preserving individual story context",
+      "order": 3,
+      "requires": ["Structural Analysis"],
+      "promptTemplate": "Identify recurring themes across narratives while maintaining attention to:\n1. Content themes (what the stories are about)\n2. Functional themes (what the stories do for the narrator)\n3. Structural themes (patterns in how stories are told)\n4. Contextual themes (how context shapes stories)\n\nNote both commonalities and unique variations.",
+      "inputs": ["complete_narratives", "narrative_structures"],
+      "outputs": ["narrative_themes", "theme_variations"]
+    },
+    {
+      "name": "Dialogic/Performance Analysis",
+      "description": "Examine how narratives are co-constructed in interaction and perform identity work",
+      "order": 4,
+      "requires": ["Thematic Analysis"],
+      "promptTemplate": "Analyze the interactive and performative aspects:\n1. How does the audience (interviewer/reader) shape the narrative?\n2. What identities does the narrator construct through storytelling?\n3. How does the narrator position themselves and others?\n4. What cultural narratives or master narratives are drawn upon?\n5. How might the narrative differ in other contexts?\n\nExamine both content and delivery.",
+      "inputs": ["narrative_themes", "interaction_contexts"],
+      "outputs": ["identity_work", "positioning_analysis", "cultural_narratives"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding"],
+    "analysis": ["extractThemes", "analyzePatterns"],
+    "validation": ["findNegativeCases"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "persuasiveness": "Are interpretations convincing and well-supported?",
+    "coherence": "Do narratives make sense as complete stories?",
+    "pragmaticUse": "Can findings inform practice or policy?",
+    "contextSensitivity": "Are narratives understood in their social and cultural context?"
+  },
+  "metadata": {
+    "citations": 892,
+    "usageCount": 0,
+    "rating": 4.7,
+    "tags": ["narrative", "stories", "identity", "meaning-making", "interpretive"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Riessman, C. K. (2008). Narrative methods for the human sciences. Sage.",
+      "Labov, W., & Waletzky, J. (1967). Narrative analysis: Oral versions of personal experience.",
+      "Bamberg, M. (2012). Narrative analysis. In H. Cooper (Ed.), APA handbook of research methods in psychology."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["qualitative_methods_expert", "narrative_researcher"],
+  "examples": [
+    {
+      "title": "Illness Narratives Study",
+      "description": "Analysis of how people with chronic illness construct narratives of their experience",
+      "context": "Healthcare research",
+      "sampleSize": 15
+    }
+  ]
+}

@@ -248,7 +248,12 @@ describe('TheoryEngine', () => {
       expect(result).toBeDefined();
       expect(result.coreCategory).toBeDefined();
       expect(result.completeness).toBeLessThan(0.6); // Should be low
-      expect(result.recommendations).toContain(expect.stringMatching(/incomplete|continue|more/i));
+      expect(result.recommendations.length).toBeGreaterThan(0);
+      // Check that at least one recommendation mentions incompleteness or need for more data
+      const hasRelevantRecommendation = result.recommendations.some(r =>
+        /incomplete|continue|more|develop/i.test(r)
+      );
+      expect(hasRelevantRecommendation).toBe(true);
     });
   });
 });

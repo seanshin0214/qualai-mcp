@@ -1,0 +1,91 @@
+{
+  "id": "case-study-yin-2018",
+  "name": "Case Study Research",
+  "version": "6.0.0",
+  "author": "Robert K. Yin",
+  "category": "mixed",
+  "description": "In-depth investigation of a contemporary phenomenon within its real-world context, especially when boundaries between phenomenon and context are unclear. Allows for multiple sources of evidence.",
+  "stages": [
+    {
+      "name": "Case Definition and Protocol",
+      "description": "Define the case, unit of analysis, and develop systematic case study protocol",
+      "order": 1,
+      "promptTemplate": "Develop your case study approach:\n1. What is the 'case'? (individual, group, organization, event, etc.)\n2. What are the boundaries of the case? (time, place, definition)\n3. What is the unit of analysis? (holistic or embedded)\n4. What type of case study? (explanatory, exploratory, descriptive)\n5. What propositions or questions guide the inquiry?\n\nCreate a protocol for systematic data collection and analysis.",
+      "inputs": ["research_questions", "case_context"],
+      "outputs": ["case_definition", "study_protocol", "propositions"],
+      "minimumSampleSize": 1
+    },
+    {
+      "name": "Multi-Source Data Collection",
+      "description": "Gather data from multiple sources to build comprehensive case understanding",
+      "order": 2,
+      "requires": ["Case Definition and Protocol"],
+      "promptTemplate": "Collect and organize data from multiple sources:\n1. Documents (reports, records, archives)\n2. Interviews (key informants, participants)\n3. Observations (direct, participant)\n4. Physical artifacts\n5. Archival records\n6. Audio-visual materials\n\nCreate a case study database organizing all evidence. Maintain chain of evidence.",
+      "inputs": ["documents", "interviews", "observations", "artifacts"],
+      "outputs": ["case_database", "evidence_log", "chronology"]
+    },
+    {
+      "name": "Within-Case Analysis",
+      "description": "Analyze data within the single case to understand patterns and dynamics",
+      "order": 3,
+      "requires": ["Multi-Source Data Collection"],
+      "promptTemplate": "Conduct systematic within-case analysis:\n1. Create detailed case description\n2. Develop chronology of key events\n3. Identify patterns across data sources\n4. Test propositions or answer research questions\n5. Build explanations linking events and outcomes\n6. Look for rival explanations\n\nUse both qualitative coding and quantitative analysis if applicable.",
+      "inputs": ["case_database", "propositions"],
+      "outputs": ["case_description", "patterns", "explanations", "timeline"]
+    },
+    {
+      "name": "Cross-Case Synthesis (if multiple cases)",
+      "description": "Compare and synthesize findings across cases if conducting multiple-case study",
+      "order": 4,
+      "requires": ["Within-Case Analysis"],
+      "optional": true,
+      "promptTemplate": "Synthesize across cases:\n1. Create word tables comparing cases on key dimensions\n2. Identify patterns that replicate across cases\n3. Note contrasting patterns (theoretical replication)\n4. Build cross-case propositions\n5. Develop overall theoretical framework\n\nLook for both literal and theoretical replication.",
+      "inputs": ["multiple_case_descriptions", "patterns"],
+      "outputs": ["cross_case_patterns", "replication_logic", "theoretical_framework"]
+    },
+    {
+      "name": "Validity Testing and Conclusion",
+      "description": "Test validity through multiple tactics and draw conclusions",
+      "order": 5,
+      "requires": ["Within-Case Analysis"],
+      "promptTemplate": "Strengthen validity and conclude:\n1. Construct validity: Use multiple sources, establish chain of evidence\n2. Internal validity: Pattern matching, explanation building, rival explanations\n3. External validity: Replication logic (if multiple cases)\n4. Reliability: Use case study protocol and database\n\nDraw conclusions about:\n- Answers to research questions\n- Theoretical implications\n- Policy/practical implications\n- Recommendations for future research",
+      "inputs": ["case_description", "explanations", "evidence_log"],
+      "outputs": ["validity_assessment", "conclusions", "theoretical_implications"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding", "refineCodebook"],
+    "analysis": ["extractThemes", "analyzePatterns", "buildGroundedTheory"],
+    "validation": ["triangulate", "findNegativeCases"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "constructValidity": "Are multiple sources and perspectives used?",
+    "internalValidity": "Are causal explanations well-supported?",
+    "externalValidity": "Can findings be generalized (analytically)?",
+    "reliability": "Could the study be replicated with same results?",
+    "chainOfEvidence": "Can reader trace evidence to conclusions?"
+  },
+  "metadata": {
+    "citations": 3156,
+    "usageCount": 0,
+    "rating": 4.9,
+    "tags": ["case-study", "mixed-methods", "triangulation", "in-depth", "contemporary"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Yin, R. K. (2018). Case study research and applications: Design and methods (6th ed.). Sage.",
+      "Stake, R. E. (1995). The art of case study research. Sage.",
+      "Eisenhardt, K. M. (1989). Building theories from case study research. Academy of Management Review, 14(4), 532-550."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["case_study_methodologist", "mixed_methods_expert"],
+  "examples": [
+    {
+      "title": "Educational Innovation Implementation",
+      "description": "Multiple-case study of how three schools implemented new teaching approach",
+      "context": "Education research",
+      "sampleSize": 3
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "id": "discourse-analysis-gee-2014",
+  "name": "Discourse Analysis",
+  "version": "2.1.0",
+  "author": "James Paul Gee",
+  "category": "critical",
+  "description": "Analyzes language-in-use to understand how language constructs social realities, identities, and power relations. Examines both what is said and how it is said.",
+  "stages": [
+    {
+      "name": "Discourse Mapping",
+      "description": "Identify discourse units and their functions in the data",
+      "order": 1,
+      "promptTemplate": "Map out the discourse structure:\n1. Identify stanzas (groups of idea units that go together)\n2. Mark shifts in topic, perspective, or voice\n3. Note linguistic features (word choice, grammar, register)\n4. Identify what Gee calls 'Big D' Discourses (ways of being, doing, thinking)\n\nPay attention to both explicit content and implicit meanings.",
+      "inputs": ["text_data", "transcripts"],
+      "outputs": ["discourse_units", "linguistic_features"],
+      "minimumSampleSize": 3
+    },
+    {
+      "name": "Building Tasks Analysis",
+      "description": "Analyze what the language is doing - the seven building tasks",
+      "order": 2,
+      "requires": ["Discourse Mapping"],
+      "promptTemplate": "For each discourse segment, analyze how language builds:\n1. Significance: What is made important or not?\n2. Activities: What activities are being enacted?\n3. Identities: What identities are being enacted?\n4. Relationships: What relationships are being built?\n5. Politics: What social goods are being distributed?\n6. Connections: How are things connected?\n7. Sign Systems: What sign systems (language, gesture, etc.) are relevant?\n\nDocument specific linguistic evidence for each.",
+      "inputs": ["discourse_units"],
+      "outputs": ["building_tasks_analysis", "social_functions"]
+    },
+    {
+      "name": "Tools of Inquiry Application",
+      "description": "Apply Gee's tools of inquiry to deep analysis",
+      "order": 3,
+      "requires": ["Building Tasks Analysis"],
+      "promptTemplate": "Apply these analytical tools:\n1. Situated meaning: What do words mean in this specific context?\n2. Social languages: What 'social language' is being used?\n3. Figured worlds: What cultural models or theories are assumed?\n4. Intertextuality: How does this relate to other texts/discourses?\n5. Big 'D' Discourses: What Discourses (with capital D) are at play?\n6. Conversations: What ongoing debates/conversations is this part of?\n\nIdentify patterns and their social implications.",
+      "inputs": ["building_tasks_analysis", "context_data"],
+      "outputs": ["deep_analysis", "discourse_patterns", "power_relations"]
+    },
+    {
+      "name": "Validity and Critique",
+      "description": "Test interpretations and consider alternative readings",
+      "order": 4,
+      "requires": ["Tools of Inquiry Application"],
+      "promptTemplate": "Validate and critique your analysis:\n1. Convergence: Do multiple analytical tools lead to similar insights?\n2. Agreement: Would others working from the same perspective agree?\n3. Coverage: Are all parts of the data accounted for?\n4. Linguistic details: Is analysis grounded in specific language features?\n5. Alternative explanations: What other interpretations are possible?\n6. Power sensitivity: Who benefits from this way of understanding?\n\nDocument both strengths and limitations of interpretations.",
+      "inputs": ["deep_analysis", "discourse_patterns"],
+      "outputs": ["validated_analysis", "alternative_interpretations", "critical_reflection"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding"],
+    "analysis": ["extractThemes", "analyzePatterns"],
+    "validation": ["findNegativeCases"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "linguisticDetail": "Is analysis grounded in specific language features?",
+    "contextSensitivity": "Is the social and cultural context considered?",
+    "powerCritique": "Are power relations and their effects analyzed?",
+    "validity": "Are interpretations tested against multiple criteria?"
+  },
+  "metadata": {
+    "citations": 1247,
+    "usageCount": 0,
+    "rating": 4.6,
+    "tags": ["discourse", "language", "power", "critical-analysis", "social-construction"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Gee, J. P. (2014). An introduction to discourse analysis: Theory and method (4th ed.). Routledge.",
+      "Fairclough, N. (2003). Analysing discourse: Textual analysis for social research. Routledge.",
+      "Van Dijk, T. A. (2008). Discourse and power. Palgrave Macmillan."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["critical_discourse_analyst", "sociolinguist"],
+  "examples": [
+    {
+      "title": "Educational Policy Discourse",
+      "description": "Analysis of how education reform documents construct teachers, students, and learning",
+      "context": "Education policy research",
+      "sampleSize": 8
+    }
+  ]
+}

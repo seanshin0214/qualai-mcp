@@ -74,6 +74,10 @@ const mergeCodesSmartSchema = z.object({
   codes: z.array(z.string()).describe('Codes to analyze for potential merging'),
 });
 
+const suggestSubcodesSchema = z.object({
+  code: z.string().describe('Parent code to suggest subcodes for'),
+});
+
 // 3. Thematic Analysis Tools
 const extractThemesSchema = z.object({
   projectName: z.string().describe('Project name'),
@@ -1143,6 +1147,132 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         response += `✅ Theory has been saved to the knowledge graph.\n`;
         response += `Use entity name: ${parsed.projectName}__theory\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'mergeCodesSmart': {
+        const parsed = mergeCodesSmartSchema.parse(args);
+
+        // Build Code objects from code names (simplified - assumes codes exist in KB)
+        const codes = parsed.codes.map(codeName => ({
+          name: codeName,
+          definition: `Code: ${codeName}`, // Simplified
+          examples: [],
+          frequency: 1,
+          type: 'constructed' as const,
+        }));
+
+        if (codes.length < 2) {
+          throw new Error('Need at least 2 codes to analyze for merging');
+        }
+
+        const result = await codingEngine.refineCodebook(codes);
+
+        let response = `🔀 SMART CODE MERGE ANALYSIS\n\n`;
+        response += `Analyzed ${parsed.codes.length} codes\n`;
+        response += `Suggested merges: ${result.merges.length}\n\n`;
+
+        if (result.merges.length > 0) {
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+          response += `📋 MERGE RECOMMENDATIONS:\n\n`;
+
+          for (const merge of result.merges) {
+            response += `✓ Merge "${merge.from}" → "${merge.to}"\n`;
+            response += `  Reason: ${merge.reason}\n\n`;
+          }
+
+          response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+          response += `📊 REFINED CODEBOOK (${result.refined.length} codes):\n\n`;
+
+          for (const code of result.refined.slice(0, 10)) {
+            response += `• ${code.name}\n`;
+            response += `  Definition: ${code.definition}\n`;
+            response += `  Frequency: ${code.frequency}\n\n`;
+          }
+
+          if (result.refined.length > 10) {
+            response += `... and ${result.refined.length - 10} more codes\n\n`;
+          }
+        } else {
+          response += `✅ No merges needed - all codes are sufficiently distinct.\n`;
+        }
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
+          }],
+        };
+      }
+
+      case 'suggestSubcodes': {
+        const parsed = suggestSubcodesSchema.parse(args);
+
+        let response = `🌳 SUBCODE SUGGESTIONS FOR: ${parsed.code}\n\n`;
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        // Generate smart subcode suggestions based on code name and context
+        const codeType = parsed.code.toLowerCase();
+        let suggestions: string[] = [];
+
+        // Pattern-based subcode generation
+        if (codeType.includes('stress') || codeType.includes('anxiety')) {
+          suggestions = [
+            `${parsed.code}__academic`,
+            `${parsed.code}__social`,
+            `${parsed.code}__financial`,
+            `${parsed.code}__health`,
+          ];
+        } else if (codeType.includes('coping') || codeType.includes('strategy')) {
+          suggestions = [
+            `${parsed.code}__problem-focused`,
+            `${parsed.code}__emotion-focused`,
+            `${parsed.code}__avoidance`,
+            `${parsed.code}__seeking-support`,
+          ];
+        } else if (codeType.includes('experience') || codeType.includes('feeling')) {
+          suggestions = [
+            `${parsed.code}__positive`,
+            `${parsed.code}__negative`,
+            `${parsed.code}__mixed`,
+            `${parsed.code}__neutral`,
+          ];
+        } else if (codeType.includes('process') || codeType.includes('change')) {
+          suggestions = [
+            `${parsed.code}__initial`,
+            `${parsed.code}__developing`,
+            `${parsed.code}__established`,
+            `${parsed.code}__outcome`,
+          ];
+        } else {
+          // Generic dimensional subcoding
+          suggestions = [
+            `${parsed.code}__type-a`,
+            `${parsed.code}__type-b`,
+            `${parsed.code}__intensity-high`,
+            `${parsed.code}__intensity-low`,
+            `${parsed.code}__context-specific`,
+          ];
+        }
+
+        response += `💡 SUGGESTED SUBCODES:\n\n`;
+        for (const subcode of suggestions) {
+          response += `  • ${subcode}\n`;
+        }
+
+        response += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+        response += `📝 RATIONALE:\n\n`;
+        response += `These subcodes follow dimensional analysis principles:\n`;
+        response += `- Breaking down the parent code into meaningful dimensions\n`;
+        response += `- Capturing variations in properties or contexts\n`;
+        response += `- Enabling more nuanced analysis\n\n`;
+        response += `Tip: You can customize these suggestions based on your data.\n`;
 
         return {
           content: [{

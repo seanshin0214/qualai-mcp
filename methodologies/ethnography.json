@@ -1,0 +1,80 @@
+{
+  "id": "ethnography-hammersley-atkinson-2019",
+  "name": "Ethnography",
+  "version": "4.0.0",
+  "author": "Martyn Hammersley & Paul Atkinson",
+  "category": "interpretive",
+  "description": "Systematic study of people and cultures through immersion and participant observation. Focuses on understanding social practices, meanings, and cultural patterns from an insider's perspective.",
+  "stages": [
+    {
+      "name": "Fieldwork and Observation",
+      "description": "Conduct systematic observation and documentation of field site",
+      "order": 1,
+      "promptTemplate": "Analyze fieldnotes and observational data:\n1. Identify key settings, actors, and activities\n2. Note patterns in behavior, interaction, and space use\n3. Document cultural artifacts and their meanings\n4. Record both ordinary routines and exceptional events\n5. Note researcher's position and relationship to participants\n\nLook for what people do, not just what they say they do.",
+      "inputs": ["fieldnotes", "observation_logs", "artifacts"],
+      "outputs": ["observational_codes", "cultural_patterns", "field_map"],
+      "minimumSampleSize": 1
+    },
+    {
+      "name": "Interview and Conversation Analysis",
+      "description": "Analyze formal interviews and informal conversations",
+      "order": 2,
+      "promptTemplate": "Examine interview and conversation data:\n1. Identify insider (emic) terms and concepts\n2. Note how participants explain their practices\n3. Compare what people say with what they do\n4. Identify cultural categories and classifications\n5. Analyze storytelling and meaning-making\n\nPay attention to both explicit knowledge and tacit understandings.",
+      "inputs": ["interview_transcripts", "conversational_data"],
+      "outputs": ["emic_concepts", "cultural_categories", "explanatory_models"]
+    },
+    {
+      "name": "Pattern Identification and Theory Building",
+      "description": "Identify cultural patterns and build ethnographic theory",
+      "order": 3,
+      "requires": ["Fieldwork and Observation", "Interview and Conversation Analysis"],
+      "promptTemplate": "Synthesize across data sources:\n1. Identify recurrent patterns in practices, beliefs, and values\n2. Map relationships between cultural domains\n3. Develop analytical concepts that capture cultural logic\n4. Build theory about how this cultural world works\n5. Consider historical and broader social contexts\n\nMove from description to interpretation and theory.",
+      "inputs": ["observational_codes", "emic_concepts", "field_context"],
+      "outputs": ["cultural_patterns", "ethnographic_themes", "theoretical_framework"]
+    },
+    {
+      "name": "Thick Description and Writing",
+      "description": "Craft rich, contextual descriptions that convey cultural understanding",
+      "order": 4,
+      "requires": ["Pattern Identification and Theory Building"],
+      "promptTemplate": "Develop thick description:\n1. Provide detailed context for behaviors and events\n2. Layer multiple levels of meaning and interpretation\n3. Show rather than just tell about cultural patterns\n4. Include both emic and etic perspectives\n5. Consider alternative interpretations\n6. Reflect on researcher positionality and its effects\n\nAim for description that conveys the texture of lived experience.",
+      "inputs": ["cultural_patterns", "ethnographic_themes", "reflexive_notes"],
+      "outputs": ["thick_descriptions", "ethnographic_account", "reflexive_analysis"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding"],
+    "analysis": ["extractThemes", "analyzePatterns"],
+    "validation": ["triangulate", "findNegativeCases"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "immersion": "Has the researcher achieved sufficient immersion and understanding?",
+    "thickDescription": "Are descriptions rich, detailed, and contextual?",
+    "emicPerspective": "Is the insider's point of view well-represented?",
+    "reflexivity": "Is the researcher's influence acknowledged and examined?",
+    "triangulation": "Are multiple data sources and perspectives integrated?"
+  },
+  "metadata": {
+    "citations": 2341,
+    "usageCount": 0,
+    "rating": 4.8,
+    "tags": ["ethnography", "culture", "participant-observation", "fieldwork", "interpretive"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Hammersley, M., & Atkinson, P. (2019). Ethnography: Principles in practice (4th ed.). Routledge.",
+      "Geertz, C. (1973). The interpretation of cultures. Basic Books.",
+      "Emerson, R. M., Fretz, R. I., & Shaw, L. L. (2011). Writing ethnographic fieldnotes (2nd ed.). University of Chicago Press."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["anthropologist", "qualitative_ethnographer"],
+  "examples": [
+    {
+      "title": "Workplace Culture Study",
+      "description": "6-month ethnography of organizational culture in a tech startup",
+      "context": "Organizational studies",
+      "sampleSize": 50
+    }
+  ]
+}

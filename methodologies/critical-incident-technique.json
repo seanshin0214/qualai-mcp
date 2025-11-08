@@ -1,0 +1,90 @@
+{
+  "id": "critical-incident-technique-flanagan-1954",
+  "name": "Critical Incident Technique",
+  "version": "1.0.0",
+  "author": "John C. Flanagan",
+  "category": "descriptive",
+  "description": "Systematic procedure for collecting observed incidents having special significance and meeting systematically defined criteria. Focuses on specific behaviors and their outcomes in defined situations.",
+  "stages": [
+    {
+      "name": "Establishing Aims and Specifications",
+      "description": "Define the activity to be studied and establish criteria for critical incidents",
+      "order": 1,
+      "promptTemplate": "Define the focus of inquiry:\n1. What activity or role is being studied?\n2. What constitutes an 'incident' in this context?\n3. What makes an incident 'critical'?\n4. What outcomes or criteria define significance?\n5. What time frame is relevant?\n\nCriteria for critical incidents:\n- Specific observable behaviors\n- Occurred in defined situation\n- Have clear consequences (positive or negative)\n- Intent and outcome are clear",
+      "inputs": ["research_aims", "context_definition"],
+      "outputs": ["activity_definition", "incident_criteria", "significance_criteria"],
+      "minimumSampleSize": 10
+    },
+    {
+      "name": "Incident Collection",
+      "description": "Systematically collect critical incident reports from participants",
+      "order": 2,
+      "requires": ["Establishing Aims and Specifications"],
+      "promptTemplate": "Extract critical incidents from data:\n1. Identify specific incidents meeting criteria\n2. For each incident, document:\n   - What led up to the situation?\n   - What exactly did the person do (specific behavior)?\n   - What was the outcome or consequence?\n   - Why was this incident critical or significant?\n3. Ensure incidents are concrete and specific, not general\n4. Include both effective and ineffective behaviors\n\nAim for 50-100+ incidents for adequate coverage.",
+      "inputs": ["interviews", "observations", "self-reports"],
+      "outputs": ["incident_database", "behavioral_descriptions", "outcomes"]
+    },
+    {
+      "name": "Category Development",
+      "description": "Inductively develop categories that organize incidents into meaningful groups",
+      "order": 3,
+      "requires": ["Incident Collection"],
+      "promptTemplate": "Develop classification system:\n1. Group similar incidents together\n2. Define category based on what incidents have in common\n3. Test categories against all incidents\n4. Refine categories for mutual exclusivity and comprehensiveness\n5. Develop hierarchical structure if needed (major and minor categories)\n6. Define each category with clear criteria\n\nCategories should:\n- Be derived from data (inductive)\n- Cover all collected incidents\n- Be independent and distinct\n- Have practical utility",
+      "inputs": ["incident_database", "behavioral_descriptions"],
+      "outputs": ["category_system", "category_definitions", "classification_rules"]
+    },
+    {
+      "name": "Reliability Testing",
+      "description": "Test reliability of category system through independent coding",
+      "order": 4,
+      "requires": ["Category Development"],
+      "promptTemplate": "Validate classification system:\n1. Have independent coders classify sample of incidents\n2. Calculate inter-rater agreement (Cohen's kappa)\n3. Identify incidents causing disagreement\n4. Refine categories or definitions as needed\n5. Retest reliability\n6. Document final reliability coefficients\n\nAim for kappa > 0.75 for adequate reliability.",
+      "inputs": ["category_system", "incident_database"],
+      "outputs": ["reliability_statistics", "refined_categories", "coding_rules"]
+    },
+    {
+      "name": "Interpretation and Application",
+      "description": "Interpret findings and develop practical applications",
+      "order": 5,
+      "requires": ["Reliability Testing"],
+      "promptTemplate": "Draw conclusions and applications:\n1. What behaviors are most critical for success/effectiveness?\n2. What behaviors lead to negative outcomes?\n3. What patterns emerge across categories?\n4. Frequency analysis: Which categories are most common?\n5. Severity analysis: Which have most significant consequences?\n6. Practical applications:\n   - Training content\n   - Performance standards\n   - Selection criteria\n   - Job design recommendations\n\nDevelop actionable insights grounded in specific behaviors.",
+      "inputs": ["refined_categories", "incident_database"],
+      "outputs": ["behavioral_patterns", "frequency_analysis", "practical_recommendations", "training_implications"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding", "refineCodebook"],
+    "analysis": ["analyzePatterns"],
+    "validation": ["calculateReliability"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "specificity": "Are incidents concrete and specific?",
+    "comprehensiveness": "Do categories cover all incidents?",
+    "independence": "Are categories mutually exclusive?",
+    "reliability": "Can incidents be reliably classified?",
+    "practicalUtility": "Do findings inform practice?"
+  },
+  "metadata": {
+    "citations": 1823,
+    "usageCount": 0,
+    "rating": 4.6,
+    "tags": ["critical-incidents", "behavioral", "job-analysis", "effectiveness", "applied"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Flanagan, J. C. (1954). The critical incident technique. Psychological Bulletin, 51(4), 327-358.",
+      "Butterfield, L. D., et al. (2005). Fifty years of the critical incident technique. Qualitative Research, 5(4), 475-497.",
+      "Chell, E. (2004). Critical incident technique. In C. Cassell & G. Symon (Eds.), Essential guide to qualitative methods in organizational research (pp. 45-60). Sage."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["organizational_psychologist", "applied_researcher"],
+  "examples": [
+    {
+      "title": "Effective Teaching Behaviors",
+      "description": "Identifying critical incidents of effective and ineffective teaching",
+      "context": "Education/teacher training",
+      "sampleSize": 50
+    }
+  ]
+}

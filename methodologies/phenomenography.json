@@ -1,0 +1,90 @@
+{
+  "id": "phenomenography-marton-1981",
+  "name": "Phenomenography",
+  "version": "1.5.0",
+  "author": "Ference Marton",
+  "category": "descriptive",
+  "description": "Research approach that aims to identify the qualitatively different ways in which people experience, conceptualize, perceive, and understand various phenomena in the world around them.",
+  "stages": [
+    {
+      "name": "Data Collection",
+      "description": "Conduct open-ended interviews exploring how participants experience the phenomenon",
+      "order": 1,
+      "promptTemplate": "Analyze interview data focusing on variation:\n1. What is the phenomenon participants are describing?\n2. What different ways of experiencing it are evident?\n3. What aspects of the phenomenon do participants focus on?\n4. What meanings do participants attribute to it?\n5. What contextual factors shape their experience?\n\nFocus on the WHAT of experience, not the WHO.",
+      "inputs": ["interview_transcripts"],
+      "outputs": ["initial_variations", "meaning_units"],
+      "minimumSampleSize": 15
+    },
+    {
+      "name": "Iterative Analysis and Bracketing",
+      "description": "Iteratively identify and refine categories of description",
+      "order": 2,
+      "requires": ["Data Collection"],
+      "promptTemplate": "Develop categories of description:\n1. Pool all descriptions of the phenomenon\n2. Bracket your own experience - focus on participants' perspectives\n3. Identify preliminary groupings of similar descriptions\n4. Look for both commonalities and critical differences\n5. Refine categories through iterative reading\n6. Ensure categories capture qualitatively different ways of experiencing\n\nCategories should be mutually exclusive yet related.",
+      "inputs": ["initial_variations", "full_dataset"],
+      "outputs": ["preliminary_categories", "category_descriptions"]
+    },
+    {
+      "name": "Structure of Awareness",
+      "description": "Identify the structural and referential aspects of each category",
+      "order": 3,
+      "requires": ["Iterative Analysis and Bracketing"],
+      "promptTemplate": "Analyze the structure of each category:\n1. Referential aspect: What meaning is attributed to the phenomenon?\n2. Structural aspect: What features are discerned and focal?\n3. Internal horizon: What aspects are in focus vs. background?\n4. External horizon: What context is this embedded in?\n\nFor each category, describe both WHAT is experienced (referential) and HOW (structural).",
+      "inputs": ["preliminary_categories", "meaning_units"],
+      "outputs": ["category_structures", "dimensions_of_variation"]
+    },
+    {
+      "name": "Outcome Space Construction",
+      "description": "Map the logical relationships between categories in an outcome space",
+      "order": 4,
+      "requires": ["Structure of Awareness"],
+      "promptTemplate": "Build the outcome space:\n1. How do categories relate to each other?\n2. Is there a hierarchical relationship (less to more complex)?\n3. What dimensions of variation distinguish categories?\n4. Are categories inclusive (each building on previous)?\n5. What is the minimal number of categories needed?\n\nThe outcome space shows the range of possible ways of experiencing the phenomenon.",
+      "inputs": ["category_structures", "dimensions_of_variation"],
+      "outputs": ["outcome_space", "category_relationships", "critical_dimensions"]
+    },
+    {
+      "name": "Validation and Theoretical Development",
+      "description": "Validate categories and develop theoretical understanding",
+      "order": 5,
+      "requires": ["Outcome Space Construction"],
+      "promptTemplate": "Validate and theorize:\n1. Can each transcript be assigned to one category?\n2. Do categories capture the full range of variation?\n3. Are categories distinct and clearly defined?\n4. Do other researchers agree on category assignments?\n5. What are the educational/practical implications?\n6. How does this contribute to understanding the phenomenon?\n\nTest categories against full dataset.",
+      "inputs": ["outcome_space", "full_dataset"],
+      "outputs": ["validated_categories", "theoretical_implications", "practical_applications"]
+    }
+  ],
+  "tools": {
+    "coding": ["autoCoding", "refineCodebook"],
+    "analysis": ["extractThemes", "analyzePatterns"],
+    "validation": ["calculateReliability"],
+    "reporting": ["generateReport"]
+  },
+  "qualityCriteria": {
+    "categoryQuality": "Are categories clear, distinct, and parsimonious?",
+    "outcomeSpace": "Does the outcome space capture the full range of variation?",
+    "logicalRelationships": "Are relationships between categories clear?",
+    "descriptiveRichness": "Are categories richly described with evidence?",
+    "communicativeValidity": "Can findings be communicated to and validated by others?"
+  },
+  "metadata": {
+    "citations": 789,
+    "usageCount": 0,
+    "rating": 4.4,
+    "tags": ["phenomenography", "variation", "conceptions", "learning", "education"],
+    "license": "CC-BY-4.0",
+    "references": [
+      "Marton, F. (1981). Phenomenography: Describing conceptions of the world around us. Instructional Science, 10, 177-200.",
+      "Marton, F., & Booth, S. (1997). Learning and awareness. Lawrence Erlbaum.",
+      "Åkerlind, G. (2012). Variation and commonality in phenomenographic research methods. Higher Education Research & Development, 31(1), 115-127."
+    ]
+  },
+  "validated": true,
+  "reviewers": ["phenomenography_expert", "educational_researcher"],
+  "examples": [
+    {
+      "title": "Student Conceptions of Learning",
+      "description": "Identifying qualitatively different ways students conceive of learning",
+      "context": "Higher education research",
+      "sampleSize": 20
+    }
+  ]
+}
