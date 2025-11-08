@@ -16,10 +16,12 @@ import { MethodologyRAG } from './rag/methodology-rag.js';
 import { z } from 'zod';
 import { CodingEngine } from './analysis/coding-engine.js';
 import { ThemeEngine } from './analysis/theme-engine.js';
+import { TheoryEngine } from './analysis/theory-engine.js';
 
 
 const codingEngine = new CodingEngine();
 const themeEngine = new ThemeEngine();
+const theoryEngine = new TheoryEngine();
 // Initialize core systems
 const db = new SQLiteAdapter();
 const rag = new MethodologyRAG();
@@ -582,6 +584,140 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           content: [{
             type: 'text',
             text: `🔄 Auto-coding analysis for ${parsed.text.length} characters...\n\nThis feature will analyze your text and suggest codes based on:\n- Content semantics\n- Existing codes: ${parsed.existingCodes?.join(', ') || 'none'}\n- Methodology: ${parsed.methodology || 'general'}\n\n[Full implementation in progress]`,
+          }],
+        };
+      }
+
+      // Theory Building Tools
+      case 'buildGroundedTheory': {
+        const parsed = buildGroundedTheorySchema.parse(args);
+
+        // Get all codes from the project
+        const projectEntity = db.getEntity(parsed.projectName);
+        if (!projectEntity) {
+          throw new Error(`Project "${parsed.projectName}" not found. Create a project first using createProject.`);
+        }
+
+        // Get all data sources for this project
+        const relations = db.getRelations(parsed.projectName);
+        const dataSources = relations
+          .filter(r => r.relationType === 'part_of')
+          .map(r => db.getEntity(r.from))
+          .filter(e => e !== null);
+
+        if (dataSources.length === 0) {
+          throw new Error(`No data sources found for project "${parsed.projectName}". Add data sources using addDataSource.`);
+        }
+
+        // Extract codes from all data sources
+        const allCodes: any[] = [];
+
+        for (const source of dataSources) {
+          if (source && source.metadata && source.metadata.content) {
+            const codingResult = await codingEngine.autoCoding({
+              text: source.metadata.content as string,
+              methodology: 'grounded',
+            });
+            allCodes.push(...codingResult.codes);
+          }
+        }
+
+        if (allCodes.length === 0) {
+          throw new Error('No codes found. Please ensure your data sources contain text content.');
+        }
+
+        // Build grounded theory
+        const theoryResult = await theoryEngine.buildGroundedTheory({
+          codes: allCodes,
+          researchQuestion: parsed.researchQuestion,
+          paradigm: parsed.paradigm || 'constructivist',
+        });
+
+        // Store theory in knowledge graph
+        db.createEntity({
+          name: `${parsed.projectName}__theory`,
+          entityType: 'grounded_theory',
+          observations: [
+            `Core Category: ${theoryResult.coreCategory.name}`,
+            `Stage: ${theoryResult.stage}`,
+            `Completeness: ${(theoryResult.completeness * 100).toFixed(1)}%`,
+            `Supporting Categories: ${theoryResult.supportingCategories.length}`,
+          ],
+          metadata: {
+            theory: theoryResult,
+            researchQuestion: parsed.researchQuestion,
+            paradigm: parsed.paradigm || 'constructivist',
+            createdAt: new Date().toISOString(),
+          },
+        });
+
+        db.createRelation({
+          from: `${parsed.projectName}__theory`,
+          to: parsed.projectName,
+          relationType: 'theory_of',
+        });
+
+        // Format response
+        let response = `🎓 GROUNDED THEORY DEVELOPED\n\n`;
+        response += `Research Question: ${parsed.researchQuestion}\n`;
+        response += `Paradigm: ${parsed.paradigm || 'constructivist'}\n`;
+        response += `Stage: ${theoryResult.stage}\n`;
+        response += `Completeness: ${(theoryResult.completeness * 100).toFixed(1)}%\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📌 CORE CATEGORY: ${theoryResult.coreCategory.name}\n\n`;
+        response += `${theoryResult.coreCategory.description}\n\n`;
+        response += `Centrality Score: ${(theoryResult.coreCategory.centrality * 100).toFixed(1)}%\n\n`;
+
+        if (theoryResult.coreCategory.relationships.length > 0) {
+          response += `🔗 Key Relationships:\n`;
+          for (const rel of theoryResult.coreCategory.relationships.slice(0, 5)) {
+            response += `  • ${rel.description}\n`;
+          }
+          response += `\n`;
+        }
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📚 SUPPORTING CATEGORIES (${theoryResult.supportingCategories.length}):\n\n`;
+        for (const cat of theoryResult.supportingCategories.slice(0, 5)) {
+          response += `  ${cat.name}\n`;
+          response += `  └─ ${cat.relatedCodes.length} codes\n`;
+        }
+
+        if (theoryResult.supportingCategories.length > 5) {
+          response += `  ... and ${theoryResult.supportingCategories.length - 5} more categories\n`;
+        }
+
+        response += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📖 STORYLINE:\n\n${theoryResult.storyline}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `💡 THEORETICAL FRAMEWORK:\n\n${theoryResult.theoreticalFramework}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📋 RECOMMENDATIONS:\n\n`;
+        for (const rec of theoryResult.recommendations) {
+          response += `  • ${rec}\n`;
+        }
+
+        response += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📝 THEORETICAL MEMO:\n\n${theoryResult.coreCategory.theoreticalMemo}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `✅ Theory has been saved to the knowledge graph.\n`;
+        response += `Use entity name: ${parsed.projectName}__theory\n`;
+
+        return {
+          content: [{
+            type: 'text',
+            text: response,
           }],
         };
       }

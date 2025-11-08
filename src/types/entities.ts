@@ -26,7 +26,8 @@ export type EntityType =
   | 'researchQuestion'
   | 'finding'
   | 'concept'
-  | 'category';
+  | 'category'
+  | 'grounded_theory';
 
 export interface Relation {
   from: string;
@@ -52,7 +53,8 @@ export type RelationType =
   | 'analyzes'
   | 'triangulates_with'
   | 'causes'
-  | 'influences';
+  | 'influences'
+  | 'theory_of';
 
 export interface KnowledgeGraph {
   entities: Entity[];
