@@ -101,7 +101,8 @@ export class TheoryEngine {
     const groups = this.groupCodesIntoCategories(codes);
 
     for (const [categoryName, categoryCodes] of groups.entries()) {
-      if (categoryCodes.length < 2) continue;
+      // Allow single-code categories for small datasets (testing/early analysis)
+      if (categoryCodes.length < 1) continue;
 
       const category: Category = {
         name: categoryName,
@@ -539,8 +540,18 @@ export class TheoryEngine {
     const sorted = Array.from(categoryScores.entries())
       .sort((a, b) => b[1] - a[1]);
 
+    // Handle case when no categories exist
+    if (sorted.length === 0 || !sorted[0]) {
+      throw new Error('No categories found. Please ensure your codes can form at least one category.');
+    }
+
     const [coreName, coreScore] = sorted[0];
-    const coreCategory = categories.find(c => c.name === coreName)!;
+    const coreCategory = categories.find(c => c.name === coreName);
+
+    if (!coreCategory) {
+      throw new Error(`Core category "${coreName}" not found in categories list.`);
+    }
+
     const coreAxial = axialResults.find(ar => ar.phenomenon === coreName);
 
     // Build relationships
