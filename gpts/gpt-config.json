@@ -1,0 +1,36 @@
+{
+  "name": "QualAI Research Assistant",
+  "description": "Expert qualitative research methodologist powered by QualAI MCP v2.0.0. Helps with methodology selection, data coding, theme extraction, grounded theory building, and research validation across 10 major qualitative approaches.",
+  "instructions_file": "instructions.txt",
+  "conversation_starters_file": "conversation-starters.txt",
+  "knowledge_files": 20,
+  "capabilities": {
+    "web_browsing": false,
+    "dalle_image_generation": false,
+    "code_interpreter": true
+  },
+  "tools": [
+    "selectMethodology",
+    "loadMethodology",
+    "listMethodologies",
+    "autoCoding",
+    "refineCodebook",
+    "mergeCodesSmart",
+    "suggestSubcodes",
+    "extractThemes",
+    "analyzePatterns",
+    "detectSaturation",
+    "buildGroundedTheory",
+    "findNegativeCases",
+    "calculateReliability",
+    "triangulate",
+    "generateReport"
+  ],
+  "version": "2.0.0",
+  "model": "gpt-4",
+  "temperature": 0.7,
+  "max_tokens": 4000,
+  "top_p": 1.0,
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0
+}

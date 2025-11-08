@@ -1,0 +1,39 @@
+# Knowledge Files to Upload to GPT
+
+Upload these files from the QualAI MCP repository to provide comprehensive knowledge:
+
+## Core Documentation (Priority: High)
+1. README.md - Overview and features
+2. IMPROVEMENTS.md - v2.0 achievement report and capabilities
+3. CHANGELOG.md - Version history and what's new
+4. TECHNICAL_SPECIFICATION.md - Architecture and implementation details
+
+## Methodology Definitions (Priority: High)
+5. methodologies/grounded-theory-charmaz.json
+6. methodologies/thematic-analysis-braun-clarke.json
+7. methodologies/narrative-analysis.json
+8. methodologies/discourse-analysis.json
+9. methodologies/ethnography.json
+10. methodologies/case-study.json
+11. methodologies/action-research.json
+12. methodologies/phenomenography.json
+13. methodologies/hermeneutic-analysis.json
+14. methodologies/critical-incident-technique.json
+
+## Installation & Usage (Priority: Medium)
+15. INSTALL.md - Setup instructions
+16. INSTALLATION_GUIDE.md - Detailed installation guide
+17. INTRODUCTION.md - Getting started guide
+
+## Advanced Documentation (Priority: Low)
+18. IMPROVEMENTS_PLAN.md - Development roadmap
+19. docs/ - Any additional documentation files
+20. examples/ - Example usage files
+
+Total: 20 knowledge files
+
+## Notes:
+- All methodology files are JSON format with complete stage-by-stage guidance
+- Total citations represented: 11,260+
+- All files are text-based and GPT-compatible
+- Files contain detailed prompts and validation criteria for each methodology
