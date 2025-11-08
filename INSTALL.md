@@ -117,32 +117,131 @@ Claude will use the `selectMethodology` tool to recommend appropriate research m
 
 ---
 
-## 🔧 Optional: Advanced Configuration
+## 🔧 Optional: Advanced Configuration with Qdrant
 
-### Add OpenAI API Key (for better semantic search)
+### Why Use Qdrant?
+
+QualAI can work in two modes:
+- **Without Qdrant**: Uses local keyword search (basic functionality)
+- **With Qdrant**: Uses semantic search with RAG (significantly better methodology recommendations)
+
+**Recommendation**: Install Qdrant for the best experience!
+
+### 🐳 Step-by-Step: Installing Qdrant with Docker
+
+#### Prerequisites
+
+1. **Install Docker Desktop** (if not already installed)
+   - Download from: https://www.docker.com/products/docker-desktop
+   - Install and start Docker Desktop
+   - Verify installation by opening PowerShell and running: `docker --version`
+
+#### Install and Run Qdrant
+
+**Open PowerShell** and run these commands:
+
+```powershell
+# 1. Pull Qdrant Docker image
+docker pull qdrant/qdrant
+
+# 2. Create a directory for Qdrant data (optional, for persistence)
+New-Item -ItemType Directory -Force -Path "$HOME\qualai-qdrant-data"
+
+# 3. Run Qdrant container
+docker run -d `
+  -p 6333:6333 `
+  -p 6334:6334 `
+  -v "$HOME\qualai-qdrant-data:/qdrant/storage" `
+  --name qualai-qdrant `
+  qdrant/qdrant
+
+# 4. Verify Qdrant is running
+docker ps | Select-String "qualai-qdrant"
+
+# 5. Test connection (should return Qdrant version info)
+curl http://localhost:6333
+```
+
+**Expected output from step 5:**
+```json
+{"title":"qdrant - vector search engine","version":"1.x.x"}
+```
+
+#### Managing Qdrant Container
+
+```powershell
+# Check if Qdrant is running
+docker ps | Select-String "qualai-qdrant"
+
+# Stop Qdrant
+docker stop qualai-qdrant
+
+# Start Qdrant again
+docker start qualai-qdrant
+
+# View Qdrant logs
+docker logs qualai-qdrant
+
+# Remove Qdrant (if you want to uninstall)
+docker stop qualai-qdrant
+docker rm qualai-qdrant
+```
+
+#### Configure QualAI to Use Qdrant
+
+Update your `claude_desktop_config.json`:
 
 ```json
 "qualai": {
   "command": "node",
   "args": ["C:\\Users\\sshin\\Documents\\qualai-mcp\\dist\\index.js"],
   "env": {
-    "OPENAI_API_KEY": "sk-your-key-here"
+    "QDRANT_URL": "http://localhost:6333",
+    "OPENAI_API_KEY": "sk-your-openai-api-key",
+    "QUALAI_GITHUB_REPO": "qualai-community/methodologies"
   }
 }
 ```
 
-### Connect to GitHub Methodology Repository
+**Important**: You need an OpenAI API key to generate embeddings for semantic search. Get one at: https://platform.openai.com/api-keys
+
+### Alternative: Qdrant Cloud (No Docker Required)
+
+If you prefer not to use Docker:
+
+1. **Sign up** for Qdrant Cloud: https://cloud.qdrant.io
+2. **Create a cluster** (free tier available)
+3. **Get your credentials**:
+   - API URL (e.g., `https://xyz.eu-central.aws.cloud.qdrant.io:6333`)
+   - API Key
+
+4. **Configure QualAI**:
 
 ```json
 "qualai": {
   "command": "node",
   "args": ["C:\\Users\\sshin\\Documents\\qualai-mcp\\dist\\index.js"],
   "env": {
-    "QUALAI_GITHUB_REPO": "your-org/qualai-methodologies",
-    "GITHUB_TOKEN": "ghp_your-token"
+    "QDRANT_URL": "https://your-cluster.cloud.qdrant.io:6333",
+    "QDRANT_API_KEY": "your-qdrant-api-key",
+    "OPENAI_API_KEY": "sk-your-openai-api-key",
+    "QUALAI_GITHUB_REPO": "qualai-community/methodologies"
   }
 }
 ```
+
+### Configuration Without Qdrant (Fallback Mode)
+
+QualAI will work without Qdrant, using local keyword search:
+
+```json
+"qualai": {
+  "command": "node",
+  "args": ["C:\\Users\\sshin\\Documents\\qualai-mcp\\dist\\index.js"]
+}
+```
+
+**Note**: Methodology recommendations will be less accurate without semantic search.
 
 ---
 

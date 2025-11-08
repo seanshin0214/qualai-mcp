@@ -77,8 +77,91 @@ When you contribute your methodology to QualAI:
 - `generateReport` - Comprehensive analysis reports
 
 ---
-n**Note:** v1.0 includes methodology management and knowledge graph. Advanced analysis tools (auto-coding, theme extraction, etc.) are in active development for v1.1.
+**Note:** v1.0 includes methodology management and knowledge graph. Advanced analysis tools (auto-coding, theme extraction, etc.) are in active development for v1.1.
 
+
+## 📋 Prerequisites
+
+### System Requirements
+
+- **Node.js**: Version 18.0 or higher
+- **Operating System**: Windows 10+, macOS 11+, or Ubuntu 20.04+
+- **Disk Space**: At least 500 MB free
+
+### 🐳 Qdrant Vector Database (Optional but Recommended)
+
+QualAI uses **Qdrant** for semantic methodology search and RAG-enhanced analysis. While QualAI can work without Qdrant (using local keyword search as fallback), **installing Qdrant significantly improves methodology recommendations** and semantic search capabilities.
+
+#### Option 1: Docker (Recommended - Easiest)
+
+**Using PowerShell (Windows):**
+
+```powershell
+# Install Docker Desktop if not already installed
+# Download from: https://www.docker.com/products/docker-desktop
+
+# Verify Docker is running
+docker --version
+
+# Run Qdrant container
+docker run -d -p 6333:6333 -p 6334:6334 `
+  -v ${PWD}/qdrant_storage:/qdrant/storage `
+  --name qualai-qdrant `
+  qdrant/qdrant
+
+# Verify Qdrant is running
+docker ps | Select-String "qualai-qdrant"
+
+# Test Qdrant connection
+curl http://localhost:6333
+```
+
+**Using Bash (Linux/macOS):**
+
+```bash
+# Verify Docker is running
+docker --version
+
+# Run Qdrant container
+docker run -d -p 6333:6333 -p 6334:6334 \
+  -v $(pwd)/qdrant_storage:/qdrant/storage \
+  --name qualai-qdrant \
+  qdrant/qdrant
+
+# Verify Qdrant is running
+docker ps | grep qualai-qdrant
+
+# Test Qdrant connection
+curl http://localhost:6333
+```
+
+**Stop/Start Qdrant:**
+
+```powershell
+# Stop Qdrant
+docker stop qualai-qdrant
+
+# Start Qdrant again
+docker start qualai-qdrant
+
+# Remove Qdrant (if needed)
+docker rm -f qualai-qdrant
+```
+
+#### Option 2: Qdrant Cloud (No Docker Required)
+
+If you don't want to run Docker locally:
+
+1. Sign up for free at [Qdrant Cloud](https://cloud.qdrant.io)
+2. Create a cluster
+3. Get your API URL and API Key
+4. Use them in the configuration (see below)
+
+#### Option 3: Run Without Qdrant (Fallback Mode)
+
+QualAI will automatically use local keyword search if Qdrant is not available. No additional setup required, but semantic search will be limited.
+
+---
 
 ## 🚀 Quick Start
 
@@ -98,7 +181,24 @@ npm run build
 
 ### Configure Claude Desktop
 
+#### Basic Configuration (Without Qdrant)
+
 Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "qualai": {
+      "command": "node",
+      "args": ["C:\\Users\\YOUR-USERNAME\\Documents\\qualai-mcp\\dist\\index.js"]
+    }
+  }
+}
+```
+
+#### With Qdrant (Recommended for Best Performance)
+
+If you installed Qdrant using Docker locally:
 
 ```json
 {
@@ -107,13 +207,40 @@ Add to your `claude_desktop_config.json`:
       "command": "node",
       "args": ["C:\\Users\\YOUR-USERNAME\\Documents\\qualai-mcp\\dist\\index.js"],
       "env": {
-        "OPENAI_API_KEY": "your-openai-key-optional",
+        "QDRANT_URL": "http://localhost:6333",
+        "OPENAI_API_KEY": "sk-your-openai-api-key",
         "QUALAI_GITHUB_REPO": "qualai-community/methodologies"
       }
     }
   }
 }
 ```
+
+If you're using Qdrant Cloud:
+
+```json
+{
+  "mcpServers": {
+    "qualai": {
+      "command": "node",
+      "args": ["C:\\Users\\YOUR-USERNAME\\Documents\\qualai-mcp\\dist\\index.js"],
+      "env": {
+        "QDRANT_URL": "https://your-cluster.cloud.qdrant.io:6333",
+        "QDRANT_API_KEY": "your-qdrant-api-key",
+        "OPENAI_API_KEY": "sk-your-openai-api-key",
+        "QUALAI_GITHUB_REPO": "qualai-community/methodologies"
+      }
+    }
+  }
+}
+```
+
+**Environment Variables Explained:**
+
+- `QDRANT_URL`: Qdrant server URL (default: `http://localhost:6333`)
+- `QDRANT_API_KEY`: Required only for Qdrant Cloud (optional for local Docker)
+- `OPENAI_API_KEY`: For generating text embeddings (required if using Qdrant)
+- `QUALAI_GITHUB_REPO`: Community methodologies repository (default: `qualai-community/methodologies`)
 
 ### Restart Claude Desktop
 
