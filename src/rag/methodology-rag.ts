@@ -83,7 +83,11 @@ export class MethodologyRAG {
    * Load methodologies from local filesystem
    */
   private async loadLocalMethodologies() {
-    const methodologiesDir = path.join(process.cwd(), 'methodologies');
+    // Use QUALAI_DATA_DIR environment variable if available, otherwise use project root
+    const baseDir = process.env.QUALAI_DATA_DIR
+      ? path.dirname(process.env.QUALAI_DATA_DIR)
+      : process.cwd();
+    const methodologiesDir = path.join(baseDir, 'methodologies');
 
     if (!fs.existsSync(methodologiesDir)) {
       fs.mkdirSync(methodologiesDir, { recursive: true });
