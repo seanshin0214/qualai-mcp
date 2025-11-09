@@ -256,11 +256,19 @@ Help me choose the right methodology and start coding."
 
 ## 🌍 Community Methodologies
 
-### Current Methodologies (2)
+### Current Methodologies (10)
 
 **Built-in:**
-1. **Constructivist Grounded Theory** (Charmaz, 2014)
-2. **Reflexive Thematic Analysis** (Braun & Clarke, 2006)
+1. **Constructivist Grounded Theory** (Charmaz, 2014) - Complete 4-stage process with memo writing
+2. **Reflexive Thematic Analysis** (Braun & Clarke, 2006) - 6-phase systematic approach
+3. **Discourse Analysis** (Gee, 2014) - Language-in-use and power relations analysis
+4. **Narrative Analysis** - Story structure and meaning-making
+5. **Phenomenography** - Variation in ways of experiencing phenomena
+6. **Ethnography** - Cultural and social patterns in context
+7. **Hermeneutic Analysis** - Interpretive understanding and hermeneutic circle
+8. **Case Study** (Yin/Stake) - In-depth contextual investigation
+9. **Action Research** - Participatory change-oriented inquiry
+10. **Critical Incident Technique** (Flanagan) - Significant events analysis
 
 **Community Contributed:**
 - *Be the first to contribute!*
@@ -357,19 +365,29 @@ We welcome all forms of contribution!
 
 ## 📊 Roadmap
 
+### v1.0 (Current) ✅
+- [x] 10 built-in methodologies
+- [x] RAG-powered methodology selection
+- [x] Knowledge graph for research data
+- [x] 20 analysis tools
+
 ### v1.1 (Q1 2025)
 - [ ] Interpretive Phenomenological Analysis (IPA)
-- [ ] Discourse Analysis tools
-- [ ] 10+ community methodologies
+- [ ] Conversation Analysis
+- [ ] Content Analysis
+- [ ] 15+ total methodologies
+- [ ] Enhanced auto-coding with GPT-4
 
 ### v1.2 (Q2 2025)
 - [ ] Real-time collaboration
-- [ ] Multi-language support
+- [ ] Multi-language support (Korean, Spanish, Chinese)
 - [ ] 25+ community methodologies
+- [ ] Export to ATLAS.ti, NVivo formats
 
 ### v2.0 (Q3 2025)
 - [ ] Web interface
 - [ ] 50+ community methodologies
+- [ ] Live interview transcription
 
 ---
 
